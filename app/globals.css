@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #05070D;
+  --color-background-secondary: #090D16;
+  --color-panel: #0C1220;
+  --color-border-primary: #243047;
+  
+  --color-primary: #8B5CF6; /* Purple (AI/ML) */
+  --color-blue-accent: #3B82F6; /* Blue (Engineering) */
+  --color-cyan-accent: #06B6D4; /* Cyan (Data) */
+  --color-success: #10B981; /* Emerald (Live) */
+  --color-warning: #F59E0B; /* Orange (Projects) */
+  --color-pink-accent: #EC4899; /* Pink (Special) */
+  --color-yellow-accent: #EAB308; /* Yellow (Resume) */
+  --color-error: #F43F5E; /* Rose (Errors) */
+  
+  --color-text: #F8FAFC;
+  --color-muted: #94A3B8;
+
+  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #05070D;
+    --foreground: #F8FAFC;
+  }
+}
+
+@layer utilities {
+  .noise-bg {
+    background-image: url("/images/noise.png");
+    background-repeat: repeat;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+  
+  .terminal-border {
+    @apply border border-border-primary;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .terminal-border-glow {
+    @apply border border-primary;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+  }
+  
+  .grid-bg {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(36, 48, 71, 0.3) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(36, 48, 71, 0.3) 1px, transparent 1px);
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #05070D;
+}
+::-webkit-scrollbar-thumb {
+  background: #243047;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
 }
