@@ -17,15 +17,35 @@ export function ContactSection() {
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-    // Simulate API call
-    setTimeout(() => {
-      setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        console.error('Submission failed:', data.message);
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 5000);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setStatus('error');
       setTimeout(() => setStatus('idle'), 5000);
-    }, 1500);
+    }
   };
 
   return (
@@ -129,13 +149,15 @@ export function ContactSection() {
                 className={cn(
                   "mt-4 w-full py-3 px-4 font-bold rounded-sm border transition-all flex items-center justify-center gap-2",
                   status === 'success' ? "bg-success text-background border-success" : 
+                  status === 'error' ? "bg-red-500 text-white border-red-500" :
                   status === 'sending' ? "bg-panel text-muted border-border-primary" : 
                   "bg-pink-accent text-background border-pink-accent hover:bg-pink-accent/90 shadow-[0_0_15px_rgba(236,72,153,0.3)]"
                 )}
               >
                 {status === 'idle' && <span>[ SEND MESSAGE ]</span>}
                 {status === 'sending' && <span className="flex items-center gap-2">TRANSMITTING <TerminalCursor /></span>}
-                {status === 'success' && <span>MESSAGE SENT SUCCESSFULLY</span>}
+                {status === 'success' && <span>✓ MESSAGE SENT SUCCESSFULLY</span>}
+                {status === 'error' && <span>✕ FAILED TO SEND MESSAGE</span>}
               </button>
             </form>
           </Terminal>
