@@ -12,7 +12,6 @@ export const skillsData: SkillCategory[] = [
   {
     title: "Languages",
     skills: [
-      { name: "Java", level: 18 },
       { name: "Python", level: 16 },
       { name: "JavaScript", level: 15 },
       { name: "TypeScript", level: 14 },
@@ -34,7 +33,6 @@ export const skillsData: SkillCategory[] = [
   {
     title: "Backend",
     skills: [
-      { name: "Spring Boot", level: 17 },
       { name: "Node.js", level: 14 },
       { name: "Express.js", level: 14 },
       { name: "REST APIs", level: 16 },
@@ -45,7 +43,6 @@ export const skillsData: SkillCategory[] = [
     title: "Databases",
     skills: [
       { name: "PostgreSQL", level: 15 },
-      { name: "MongoDB", level: 13 },
       { name: "MySQL", level: 16 },
       { name: "PostGIS", level: 12 },
     ]
@@ -64,12 +61,10 @@ export const skillsData: SkillCategory[] = [
   {
     title: "Cloud / DevOps",
     skills: [
-      { name: "AWS", level: 10 },
       { name: "Docker", level: 12 },
       { name: "Git", level: 17 },
       { name: "GitHub", level: 17 },
       { name: "CI/CD", level: 11 },
-      { name: "Linux", level: 14 },
     ]
   }
 ];

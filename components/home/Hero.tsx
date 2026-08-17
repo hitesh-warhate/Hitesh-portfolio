@@ -79,10 +79,13 @@ export function Hero() {
   }
 
   return (
-    <div className="w-full min-h-[80vh] flex flex-col justify-center items-start pt-10 pb-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+    <div className="w-full min-h-[80vh] flex flex-col justify-center items-start pt-10 pb-20 gap-10">
+      
+      {/* Top Section: Title & Profile */}
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 w-full items-center lg:items-start">
+        
         {/* Left Column - Main Info */}
-        <div className="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1">
+        <div className="flex-1 flex flex-col justify-center w-full">
           <div className="font-mono text-sm sm:text-base text-primary mb-6 flex items-center h-6">
             <span>{text}</span>
             {isTyping && <TerminalCursor className="ml-1" />}
@@ -158,13 +161,13 @@ export function Hero() {
           </motion.div>
         </div>
         
-        {/* Right Column - Visuals & Profile */}
-        <div className="lg:col-span-5 order-1 lg:order-2">
+        {/* Right Column - Profile */}
+        <div className="w-full lg:w-[380px] shrink-0 mt-10 lg:mt-0">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: isTyping ? 0 : 1, scale: isTyping ? 0.95 : 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="w-full flex flex-col gap-6"
+            className="w-full"
           >
             {/* Professional Profile Photo Container */}
             <div className="terminal-border border-primary/50 bg-panel rounded-sm overflow-hidden flex flex-col group transition-all duration-300 hover:border-cyan-accent/50 shadow-[0_0_20px_rgba(139,92,246,0.15)] hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] relative">
@@ -197,13 +200,12 @@ export function Hero() {
                 </div>
               </div>
 
-              <div className="bg-background-secondary border-t border-border-primary p-4 font-mono text-sm group-hover:border-cyan-accent transition-colors relative z-20">
-                
+              <div className="bg-background-secondary border-t border-border-primary p-4 font-mono text-sm group-hover:border-cyan-accent transition-colors relative z-20 min-h-[90px] flex flex-col justify-center">
                 {/* On Hover Info overlay */}
                 <div className="absolute inset-0 bg-background-secondary p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center">
                    <div className="text-primary mb-1">hitesh@portfolio:~$ whoami</div>
                    <div className="text-text font-bold">Hitesh Warhate</div>
-                   <div className="text-muted">Software Developer</div>
+                   <div className="text-muted text-xs">Software Developer</div>
                 </div>
 
                 {/* Default Info */}
@@ -214,7 +216,7 @@ export function Hero() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted">ROLE:</span>
-                    <span className="text-text">Software Developer</span>
+                    <span className="text-text text-xs sm:text-sm">Software Developer</span>
                   </div>
                   <div className="flex justify-between mt-2">
                     <span className="text-muted">STATUS:</span>
@@ -226,23 +228,20 @@ export function Hero() {
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="terminal-border p-4 bg-panel rounded-sm">
-                 <div className="text-xs text-muted font-mono mb-2">FOCUS</div>
-                 <div className="flex flex-col gap-1 font-mono text-sm">
-                   <span className="text-primary">AI/ML</span>
-                   <span className="text-cyan-accent">Data</span>
-                   <span className="text-text">Backend</span>
-                 </div>
-              </div>
-              <div className="col-span-1 h-full">
-                 <SystemStatus />
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>
+
+      {/* Bottom Section - Full Width Horizontal Status */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isTyping ? 0 : 1, y: isTyping ? 20 : 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="w-full mt-4"
+      >
+        <SystemStatus />
+      </motion.div>
+
     </div>
   );
 }
