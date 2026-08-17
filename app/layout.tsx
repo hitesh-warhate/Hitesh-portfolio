@@ -5,7 +5,7 @@ import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { GridBackground } from "@/components/effects/GridBackground";
 import { NoiseOverlay } from "@/components/effects/NoiseOverlay";
-import { TechBackground } from "@/components/effects/TechBackground";
+import { FloatingSnippets } from "@/components/effects/FloatingSnippets";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
 
@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col bg-background text-text selection:bg-primary/30 relative">
         <NoiseOverlay />
         <GridBackground />
-        <TechBackground />
+        <FloatingSnippets />
         <CustomCursor />
         
         <MobileMenu />
