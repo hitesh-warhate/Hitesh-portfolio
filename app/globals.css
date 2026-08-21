@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #05070D;
-  --color-background-secondary: #090D16;
-  --color-panel: #0C1220;
-  --color-border-primary: #243047;
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-panel: var(--panel);
+  --color-border-primary: var(--border-primary);
   
-  --color-primary: #8B5CF6; /* Purple (AI/ML) */
-  --color-blue-accent: #3B82F6; /* Blue (Engineering) */
-  --color-cyan-accent: #06B6D4; /* Cyan (Data) */
-  --color-success: #10B981; /* Emerald (Live) */
-  --color-warning: #F59E0B; /* Orange (Projects) */
-  --color-pink-accent: #EC4899; /* Pink (Special) */
-  --color-yellow-accent: #EAB308; /* Yellow (Resume) */
-  --color-error: #F43F5E; /* Rose (Errors) */
+  --color-primary: var(--primary); 
+  --color-blue-accent: var(--blue-accent); 
+  --color-cyan-accent: var(--cyan-accent); 
+  --color-success: var(--success); 
+  --color-warning: var(--warning); 
+  --color-pink-accent: var(--pink-accent); 
+  --color-yellow-accent: var(--yellow-accent); 
+  --color-error: var(--error); 
   
-  --color-text: #F8FAFC;
-  --color-muted: #94A3B8;
+  --color-text: var(--text);
+  --color-muted: var(--muted);
 
   --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --font-mono: var(--font-jetbrains-mono), monospace;
@@ -24,8 +24,43 @@
 
 @layer base {
   :root {
+    /* Minimalist High-Contrast Light Mode */
+    --background: #FFFFFF;
+    --background-secondary: #FAFAFA;
+    --panel: #FFFFFF;
+    --border-primary: #E4E4E7; /* Zinc 200 */
+    
+    --primary: #7C3AED; /* Violet 600 */
+    --blue-accent: #2563EB; /* Blue 600 */
+    --cyan-accent: #0891B2; /* Cyan 600 */
+    --success: #16A34A; /* Green 600 */
+    --warning: #D97706; /* Amber 600 */
+    --pink-accent: #DB2777; /* Pink 600 */
+    --yellow-accent: #CA8A04; /* Yellow 600 */
+    --error: #DC2626; /* Red 600 */
+
+    --text: #09090B; /* Zinc 950 */
+    --muted: #71717A; /* Zinc 500 */
+  }
+
+  .dark {
+    /* Terminal Dark Mode Variables */
     --background: #05070D;
-    --foreground: #F8FAFC;
+    --background-secondary: #090D16;
+    --panel: #0C1220;
+    --border-primary: #243047;
+    
+    --primary: #8B5CF6;
+    --blue-accent: #3B82F6;
+    --cyan-accent: #06B6D4;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --pink-accent: #EC4899;
+    --yellow-accent: #EAB308;
+    --error: #F43F5E;
+
+    --text: #F8FAFC;
+    --muted: #94A3B8;
   }
 }
 
@@ -33,22 +68,39 @@
   .noise-bg {
     background-image: url("/images/noise.png");
     background-repeat: repeat;
-    opacity: 0.03;
+    opacity: 0.02;
     pointer-events: none;
+  }
+  .dark .noise-bg {
+    opacity: 0.03;
   }
   
   .terminal-border {
     @apply border border-border-primary;
+    background-color: var(--panel);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  .dark .terminal-border {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
   
   .terminal-border-glow {
+    @apply border border-border-primary;
+    background-color: var(--panel);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  }
+  .dark .terminal-border-glow {
     @apply border border-primary;
     box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
   }
   
   .grid-bg {
     background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  }
+  .dark .grid-bg {
     background-image: 
       linear-gradient(to right, rgba(36, 48, 71, 0.3) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(36, 48, 71, 0.3) 1px, transparent 1px);
@@ -57,7 +109,8 @@
 
 body {
   background-color: var(--background);
-  color: var(--foreground);
+  color: var(--text);
+  background-image: none;
 }
 
 /* Custom Scrollbar */
@@ -65,12 +118,15 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #05070D;
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
-  background: #243047;
+  background: var(--border-primary);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3B82F6;
+  background: var(--muted);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--blue-accent);
 }

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ThemeToggle } from '../effects/ThemeToggle';
 
 const NAV_LINKS = [
   { id: '01', label: 'HOME', href: '#home', color: 'hover:text-primary' },
@@ -26,13 +27,16 @@ export function MobileMenu() {
     <div className="md:hidden sticky top-0 z-40 w-full bg-background/90 backdrop-blur-sm pt-4 pb-2 px-4 border-b border-border-primary/50">
       <div className="flex items-center justify-between terminal-border rounded-md px-4 py-2 bg-panel">
         <span className="font-mono text-sm text-primary tracking-wider font-bold">hitesh@portfolio:~</span>
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="text-text hover:text-primary transition-colors"
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-text hover:text-primary transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>

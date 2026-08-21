@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { TerminalHeader } from '../terminal/TerminalHeader';
+import { ThemeToggle } from '../effects/ThemeToggle';
 
 const NAV_LINKS = [
   { id: '01', label: 'HOME', href: '#home', color: 'hover:text-primary hover:shadow-[0_1px_0_var(--color-primary)]' },
@@ -47,6 +48,9 @@ export function Navbar() {
                 <span>[{link.id}] {link.label}</span>
               </a>
             ))}
+            <div className="ml-2 flex items-center border-l border-border-primary pl-4 h-6">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>

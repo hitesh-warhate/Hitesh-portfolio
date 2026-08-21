@@ -7,6 +7,8 @@ import { GridBackground } from "@/components/effects/GridBackground";
 import { NoiseOverlay } from "@/components/effects/NoiseOverlay";
 import { FloatingSnippets } from "@/components/effects/FloatingSnippets";
 import { Footer } from "@/components/Footer";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,23 +30,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-text selection:bg-primary/30 relative">
-        <NoiseOverlay />
-        <GridBackground />
-        <FloatingSnippets />
-        <CustomCursor />
-        
-        <MobileMenu />
-        
-        <div className="relative z-10 flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col">
-          <Navbar />
-          <main className="flex-1 pb-16">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NoiseOverlay />
+          <GridBackground />
+          <FloatingSnippets />
+          <CustomCursor />
+          
+          <MobileMenu />
+          
+          <div className="relative z-10 flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 flex flex-col">
+            <Navbar />
+            <main className="flex-1 pb-16">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
