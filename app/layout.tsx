@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, JetBrains_Mono } from "next/font/google";
 import { Navbar } from "@/components/navigation/Navbar";
 import { MobileMenu } from "@/components/navigation/MobileMenu";
+import { CommandPalette } from "@/components/navigation/CommandPalette";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { GridBackground } from "@/components/effects/GridBackground";
 import { NoiseOverlay } from "@/components/effects/NoiseOverlay";
@@ -23,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Hitesh Warhate | Software Developer",
-  description: "Software Developer and Information Technology student building full-stack applications, backend systems, AI/ML solutions and modern web experiences.",
+  description: "Software Developer and Information Technology student building robust full-stack applications, backend systems, and automated DevOps pipelines.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <GridBackground />
           <FloatingSnippets />
           <CustomCursor />
+          <CommandPalette />
           
           <MobileMenu />
           

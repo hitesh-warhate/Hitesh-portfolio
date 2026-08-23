@@ -20,17 +20,17 @@ export function AboutSection() {
               <h3 className="text-2xl font-bold text-text mb-4">Hitesh Warhate</h3>
               <p className="mb-4">Software Developer focused on:</p>
               <ul className="space-y-2 mb-6 ml-4">
-                <li className="flex gap-2 text-primary"><span className="text-muted">{'*'}</span> <span>AI/ML</span></li>
-                <li className="flex gap-2 text-cyan-accent"><span className="text-muted">{'*'}</span> <span>Data</span></li>
+                <li className="flex gap-2 text-primary"><span className="text-muted">{'*'}</span> <span>Full-Stack Development</span></li>
+                <li className="flex gap-2 text-cyan-accent"><span className="text-muted">{'*'}</span> <span>DevOps & Infrastructure</span></li>
                 <li className="flex gap-2 text-text"><span className="text-muted">{'*'}</span> <span>Backend Engineering</span></li>
-                <li className="flex gap-2 text-text"><span className="text-muted">{'*'}</span> <span>Full-Stack Development</span></li>
-                <li className="flex gap-2 text-text"><span className="text-muted">{'*'}</span> <span>Cloud / DevOps</span></li>
+                <li className="flex gap-2 text-text"><span className="text-muted">{'*'}</span> <span>CI/CD Automation</span></li>
+                <li className="flex gap-2 text-text"><span className="text-muted">{'*'}</span> <span>Cloud Computing</span></li>
               </ul>
               
               <p className="mb-4">
                 I am passionate about creating efficient, scalable systems that solve complex problems. 
-                My focus is primarily on backend infrastructure, data processing, and integrating 
-                machine learning models into production-ready web applications.
+                My focus is primarily on backend infrastructure, building full-stack platforms, and integrating 
+                robust DevOps pipelines into production-ready applications.
               </p>
               
               <div className="flex items-center text-primary mt-6">
@@ -61,7 +61,7 @@ export function AboutSection() {
                 
                 <span className="text-muted tracking-wider text-sm">CORE FOCUS</span>
                 <span className="text-text">
-                  <span className="text-primary">AI/ML</span> + <span className="text-cyan-accent">Data</span> + Software Engineering
+                  <span className="text-primary">DevOps</span> + <span className="text-cyan-accent">Full Stack</span> + Software Engineering
                 </span>
                 
                 <span className="text-muted tracking-wider text-sm">LOCATION</span>

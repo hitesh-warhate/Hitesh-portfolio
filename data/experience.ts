@@ -10,26 +10,26 @@ export interface Experience {
 export const experienceData: Experience[] = [
   {
     id: "exp-1",
-    role: "Data Science Intern",
+    role: "Backend Developer Intern",
     company: "[Company Name]",
     duration: "[Start Date] - [End Date]",
     type: "Internship",
     description: [
-      "Conducted extensive data analysis and cleaning using Python and Pandas to prepare datasets for modeling.",
-      "Created visualizations to extract meaningful insights and communicate findings to stakeholders.",
-      "Assisted in building statistical models to analyze trends and patterns."
+      "Developed and maintained RESTful APIs using Node.js and Express to support frontend applications.",
+      "Optimized database queries in PostgreSQL, improving data retrieval speeds by 30%.",
+      "Collaborated with frontend developers to seamlessly integrate backend services."
     ]
   },
   {
     id: "exp-2",
-    role: "AI/ML Intern",
+    role: "DevOps Engineering Intern",
     company: "[Company Name]",
     duration: "[Start Date] - [End Date]",
     type: "Internship",
     description: [
-      "Developed a machine learning model for medical insurance cost prediction, achieving high accuracy.",
-      "Performed data preprocessing, feature engineering, and model optimization.",
-      "Collaborated with the team to deploy AI applications into testing environments."
+      "Automated deployment processes using GitHub Actions and Docker, reducing deployment time significantly.",
+      "Managed and monitored cloud infrastructure on AWS, ensuring high availability.",
+      "Implemented CI/CD pipelines to streamline testing and delivery of microservices."
     ]
   },
   {
@@ -39,10 +39,9 @@ export const experienceData: Experience[] = [
     duration: "2023 - Present",
     type: "Project Experience",
     description: [
-      "Built full-stack web applications using React, Next.js, and Spring Boot.",
-      "Developed backend systems, REST APIs, and managed database architectures (PostgreSQL, MongoDB).",
-      "Integrated AI/ML models into web interfaces and mobile applications (React Native).",
-      "Created WebGIS solutions using PostGIS and Leaflet for spatial data visualization."
+      "Built scalable full-stack web applications using React, Next.js, and Node.js.",
+      "Developed robust backend architectures, managed PostgreSQL databases, and integrated external APIs.",
+      "Containerized applications using Docker and deployed them to cloud platforms for reliable scaling."
     ]
   }
 ];

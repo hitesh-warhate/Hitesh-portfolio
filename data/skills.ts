@@ -47,17 +47,7 @@ export const skillsData: SkillCategory[] = [
       { name: "PostGIS", level: 12 },
     ]
   },
-  {
-    title: "AI / ML",
-    skills: [
-      { name: "Python", level: 16 },
-      { name: "TensorFlow", level: 13 },
-      { name: "PyTorch", level: 11 },
-      { name: "Machine Learning", level: 14 },
-      { name: "Computer Vision", level: 13 },
-      { name: "CNN", level: 12 },
-    ]
-  },
+
   {
     title: "Cloud / DevOps",
     skills: [

@@ -35,8 +35,7 @@ A modern, highly interactive, and visually engaging portfolio website built to s
 - **Frontend:** React, Next.js, HTML, CSS, Tailwind CSS, Bootstrap
 - **Backend:** Node.js, Express.js, REST APIs, FastAPI
 - **Databases:** PostgreSQL, MySQL, PostGIS
-- **AI/ML:** TensorFlow, PyTorch, CNN, Computer Vision
-- **Cloud/DevOps:** Docker, Git, GitHub, CI/CD
+- **Cloud/DevOps:** Docker, Git, GitHub Actions, CI/CD, AWS, Nginx
 
 ## 🚀 Getting Started
 
