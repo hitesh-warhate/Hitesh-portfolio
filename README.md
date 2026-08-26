@@ -2,9 +2,9 @@
 
 <div align="center">
   <h3>
-    <a href="#">Live Preview</a>
+    <a href="https://hitesh-portfolio.vercel.app/">Live Preview</a>
     <span> | </span>
-    <a href="https://github.com/yourusername/portfolio">Repository</a>
+    <a href="https://github.com/hitesh-warhate/Hitesh-portfolio">Repository</a>
   </h3>
 </div>
 
@@ -43,13 +43,13 @@ To run this project locally, follow these steps:
 
 ### Prerequisites
 
-Make sure you have Node.js and npm (or yarn/pnpm) installed.
+Make sure you have Node.js and npm (or yarn/pnpm/bun) installed.
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/portfolio.git
+   git clone https://github.com/hitesh-warhate/Hitesh-portfolio.git
    cd Hitesh-portfolio
    ```
 
@@ -92,9 +92,9 @@ Hitesh-portfolio/
 ## 📬 Contact
 
 - **Name:** Hitesh Warhate
-- **Email:** [your.email@example.com](mailto:your.email@example.com)
-- **LinkedIn:** [linkedin.com/in/yourusername](https://linkedin.com/in/yourusername)
-- **GitHub:** [github.com/yourusername](https://github.com/yourusername)
+- **Email:** [hitesh.warhate@example.com](mailto:hitesh.warhate@example.com)
+- **LinkedIn:** [linkedin.com/in/hitesh-warhate](https://linkedin.com/in/hitesh-warhate)
+- **GitHub:** [github.com/hitesh-warhate](https://github.com/hitesh-warhate)
 
 ---
 
