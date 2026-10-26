@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import { profile, education, projects, skills } from '../data'
-import { ScrollProgress, CursorGlow, SplitText, Tilt, CountUp, Marquee, Embers } from './anim'
+import { ScrollProgress, CursorGlow, Tilt, CountUp, Marquee, Embers, useMedia } from './anim'
+import ChapterHud from './ChapterHud'
 import { Originals, Skills, Journey, FullStory, Contact } from './Sections'
 import ProjectModal from './ProjectModal'
 import Footer from './Footer'
@@ -23,6 +24,7 @@ const navLabels = {
 }
 
 const order = ['originals', 'skills', 'journey', 'story', 'contact']
+const chapters = order.map((id) => ({ id, label: navLabels[id] }))
 
 export default function Browse() {
   const [open, setOpen] = useState(null)
@@ -42,6 +44,7 @@ export default function Browse() {
   return (
     <div className="browse">
       <ScrollProgress />
+      <ChapterHud chapters={chapters} />
       <CursorGlow />
       <Navbar scrolled={scrolled} />
       <Hero onPlay={() => setOpen(projects[0])} />
@@ -103,97 +106,162 @@ function Navbar({ scrolled }) {
 }
 
 function Hero({ onPlay }) {
+  // Desktop: the hero pins while the "film starts" (letterbox + zoom-through).
+  // Phones / reduced motion: it just scrolls away with a lighter version.
+  const pinned = useMedia('(min-width: 901px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)')
+  return <HeroScene key={pinned ? 'pin' : 'flow'} pinned={pinned} onPlay={onPlay} />
+}
+
+function HeroScene({ pinned, onPlay }) {
   const ref = useRef(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const photoY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
-  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-30%'])
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+  const { scrollYProgress: p } = useScroll({
+    target: ref,
+    offset: pinned ? ['start start', 'end end'] : ['start start', 'end start'],
+  })
+  const photoY = useTransform(p, [0, 1], ['0%', pinned ? '4%' : '18%'])
+  const photoScale = useTransform(p, [0, 1], [1, pinned ? 1.35 : 1.1])
+  const contentY = useTransform(p, [0, 1], ['0%', pinned ? '-8%' : '-30%'])
+  const restOpacity = useTransform(p, [0, pinned ? 0.45 : 0.6], [1, 0])
+  const titleOpacity = useTransform(p, [pinned ? 0.55 : 0.3, pinned ? 1 : 0.8], [1, 0])
+  const titleScale = useTransform(p, [0, 1], [1, pinned ? 1.18 : 1.05])
+  const bars = useTransform(p, [0.05, pinned ? 0.55 : 0.7], [0, 1])
+  const dim = useTransform(p, [0.25, 1], [0, pinned ? 0.8 : 0.5])
+  const cueOpacity = useTransform(p, [0, 0.08], [1, 0])
 
   return (
-    <section className="hero" id="top" ref={ref}>
-      <motion.div className="hero-photo" style={{ y: photoY }}>
-        <div className="kenburns">
-          <motion.img
-            src={profile.photo}
-            alt={profile.name}
-            initial={{ scale: 1.25, opacity: 0, filter: 'blur(12px)' }}
-            animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
-            transition={{ duration: 1.8, ease: [0.2, 0.8, 0.2, 1] }}
-          />
-        </div>
-      </motion.div>
-      <div className="hero-glow" />
-      <Embers />
-      <div className="hero-fade" />
-      <motion.div
-        className="hero-content"
-        style={{ y: contentY, opacity: contentOpacity }}
-        initial="hide"
-        animate="show"
-        variants={{ show: { transition: { staggerChildren: 0.12, delayChildren: 0.9 } } }}
-      >
-        <motion.div className="hero-series" variants={fadeUp}>
-          <b>H</b> SERIES
+    <div className={`hero-stage ${pinned ? 'is-pinned' : ''}`} ref={ref}>
+      <section className="hero" id="top">
+        <motion.div className="hero-photo" style={{ y: photoY, scale: photoScale }}>
+          <div className="kenburns">
+            <motion.img
+              src={profile.photo}
+              alt={profile.name}
+              initial={{ scale: 1.25, opacity: 0, filter: 'blur(12px)' }}
+              animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+              transition={{ duration: 1.8, ease: [0.2, 0.8, 0.2, 1] }}
+            />
+          </div>
         </motion.div>
-        <h1 className="hero-title-wrap">
-          <SplitText text={profile.first} className="hero-title" delay={0.3} stagger={0.07} />
-          <span className="hero-title-shine" aria-hidden="true">
-            {profile.first}
-          </span>
-        </h1>
-        <motion.div className="hero-sub" variants={fadeUp}>
-          THE SERIES
+        <div className="hero-glow" />
+        <Embers />
+        <div className="hero-fade" />
+        <motion.div className="hero-dim" style={{ opacity: dim }} />
+        <motion.div
+          className="hero-content"
+          style={{ y: contentY }}
+          initial="hide"
+          animate="show"
+          variants={{ show: { transition: { staggerChildren: 0.12, delayChildren: 0.9 } } }}
+        >
+          <motion.div style={{ opacity: restOpacity }}>
+            <motion.div className="hero-series" variants={fadeUp}>
+              <b>H</b> SERIES
+            </motion.div>
+          </motion.div>
+          <motion.h1 className="hero-title-wrap" style={{ opacity: titleOpacity, scale: titleScale, originX: 0 }}>
+            <HeroTitle text={profile.first} progress={p} spread={pinned ? 46 : 18} />
+            <motion.span className="hero-title-shine" aria-hidden="true" style={{ opacity: cueOpacity }}>
+              {profile.first}
+            </motion.span>
+          </motion.h1>
+          <motion.div style={{ opacity: restOpacity }}>
+            <motion.div className="hero-sub" variants={fadeUp}>
+              THE SERIES
+            </motion.div>
+            <motion.div className="hero-meta" variants={fadeUp}>
+              <span className="match">
+                <CountUp to={98} />% Match
+              </span>
+              <span>{education.span}</span>
+              <span className="pill">B.Tech IT</span>
+              <span>{projects.length} Originals</span>
+              <span className="pill">CGPA {education.cgpa}</span>
+            </motion.div>
+            <motion.div className="hero-genre" variants={fadeUp}>
+              {profile.tagline}
+            </motion.div>
+            <motion.p className="hero-desc" variants={fadeUp}>
+              {profile.summary}
+            </motion.p>
+            <motion.div className="hero-actions" variants={fadeUp}>
+              <motion.button className="btn btn-play" onClick={onPlay} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 4v16l13-8z" />
+                </svg>
+                Play
+              </motion.button>
+              <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="btn btn-info" href={profile.resume} target="_blank" rel="noreferrer">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 11v6M12 7.5v.5" />
+                </svg>
+                View Resume
+              </motion.a>
+            </motion.div>
+          </motion.div>
         </motion.div>
-        <motion.div className="hero-meta" variants={fadeUp}>
-          <span className="match">
-            <CountUp to={98} />% Match
-          </span>
-          <span>{education.span}</span>
-          <span className="pill">B.Tech IT</span>
-          <span>{projects.length} Originals</span>
-          <span className="pill">CGPA {education.cgpa}</span>
+        <motion.div
+          className="hero-rating"
+          initial={{ x: 120, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 1.8, duration: 0.6 }}
+        >
+          <span>{profile.location}</span>
         </motion.div>
-        <motion.div className="hero-genre" variants={fadeUp}>
-          {profile.tagline}
-        </motion.div>
-        <motion.p className="hero-desc" variants={fadeUp}>
-          {profile.summary}
-        </motion.p>
-        <motion.div className="hero-actions" variants={fadeUp}>
-          <motion.button className="btn btn-play" onClick={onPlay} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7 4v16l13-8z" />
-            </svg>
-            Play
-          </motion.button>
-          <motion.a whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="btn btn-info" href={profile.resume} target="_blank" rel="noreferrer">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 11v6M12 7.5v.5" />
-            </svg>
-            View Resume
-          </motion.a>
-        </motion.div>
-      </motion.div>
-      <motion.div
-        className="hero-rating"
-        initial={{ x: 120, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 1.8, duration: 0.6 }}
-      >
-        <span>{profile.location}</span>
-      </motion.div>
-      <motion.a
-        href="#continue"
-        className="scroll-cue"
-        aria-label="Scroll down"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.4 }}
-      >
-        <span />
-      </motion.a>
-    </section>
+        <motion.div className="letterbox top" style={{ scaleY: bars }} />
+        <motion.div className="letterbox bottom" style={{ scaleY: bars }} />
+        <motion.a
+          href="#continue"
+          className="scroll-cue"
+          aria-label="Scroll down"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.4 }}
+          style={{ opacity: cueOpacity }}
+        >
+          <span />
+        </motion.a>
+      </section>
+    </div>
+  )
+}
+
+// Title letters: rise in on load, then drift apart from the centre as the hero scrolls.
+function HeroTitle({ text, progress, spread }) {
+  const chars = [...text]
+  const mid = (chars.length - 1) / 2
+  return (
+    <motion.span
+      className="hero-title"
+      aria-label={text}
+      initial="hide"
+      animate="show"
+      variants={{ show: { transition: { staggerChildren: 0.07, delayChildren: 0.3 } } }}
+    >
+      {chars.map((ch, i) => (
+        <HeroLetter key={i} ch={ch} progress={progress} offset={i * spread} lift={Math.abs(i - mid) * 8} />
+      ))}
+    </motion.span>
+  )
+}
+
+function HeroLetter({ ch, progress, offset, lift }) {
+  const x = useTransform(progress, [0.1, 0.9], [0, offset])
+  const y = useTransform(progress, [0.1, 0.9], [0, -lift])
+  return (
+    <motion.span className="hero-letter" style={{ x, y }} aria-hidden="true">
+      <span className="split-mask">
+        <motion.span
+          className="split-char"
+          variants={{
+            hide: { y: '110%', rotate: 8, opacity: 0 },
+            show: { y: '0%', rotate: 0, opacity: 1, transition: { duration: 0.8, ease: [0.2, 0.8, 0.2, 1] } },
+          }}
+        >
+          {ch}
+        </motion.span>
+      </span>
+    </motion.span>
   )
 }
 

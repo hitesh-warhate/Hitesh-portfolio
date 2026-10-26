@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
 import { profile, education, focus, projects, skills, journey } from '../data'
 import ProjectArt from './ProjectArt'
-import { SplitText, Tilt, CountUp, Marquee } from './anim'
+import { SplitText, Tilt, CountUp, Marquee, ScrollWords, useMedia } from './anim'
 
 const reveal = {
   initial: { opacity: 0, y: 40 },
@@ -43,59 +43,131 @@ function Heading({ kicker, title, aside }) {
 }
 
 /* ---------- Originals (projects) ---------- */
+const originalsHead = {
+  kicker: `H Originals · ${projects.length} titles`,
+  title: 'Originals',
+  aside: 'Productions from the studio — each one planned, built and shipped end to end. Click a title for the full episode guide.',
+}
+
 export function Originals({ onOpen }) {
+  // Desktop: the section pins and vertical scroll drives the posters sideways.
+  const pin = useMedia('(min-width: 901px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)')
+  return pin ? <OriginalsPinned onOpen={onOpen} /> : <OriginalsRail onOpen={onOpen} />
+}
+
+function OriginalsRail({ onOpen }) {
   return (
     <section className="section" id="originals">
-      <Heading
-        kicker={`H Originals · ${projects.length} titles`}
-        title="Originals"
-        aside="Productions from the studio — each one planned, built and shipped end to end. Click a title for the full episode guide."
-      />
+      <Heading {...originalsHead} />
       <div className="rail rail-posters">
         {projects.map((p, i) => (
-          <motion.button
-            key={p.slug}
-            className="poster"
-            onClick={() => onOpen(p)}
-            initial={{ opacity: 0, x: 80, rotateY: -25 }}
-            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ delay: i * 0.12, duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
-          >
-            <motion.span
-              className="rank"
-              initial={{ opacity: 0, scale: 0.6, y: 40 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.25 + i * 0.12, type: 'spring', stiffness: 140, damping: 14 }}
-            >
-              {i + 1}
-            </motion.span>
-            <Tilt className="poster-card" max={8}>
-              <ProjectArt project={p} />
-              <div className="poster-info">
-                <div className="poster-btns">
-                  <span className="circle white">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M7 4v16l13-8z" />
-                    </svg>
-                  </span>
-                  <span className="circle">+</span>
-                  <span className="circle push">⌄</span>
-                </div>
-                <div className="poster-meta">
-                  <span className="match">{p.match}% Match</span>
-                  <span className="pill">{p.genre}</span>
-                  <span>{p.year}</span>
-                </div>
-                <p className="poster-log">{p.logline}</p>
-                <div className="dots">{p.stack.slice(0, 4).join(' • ')}</div>
-              </div>
-            </Tilt>
-          </motion.button>
+          <Poster key={p.slug} p={p} i={i} onOpen={onOpen} />
         ))}
       </div>
     </section>
+  )
+}
+
+const SECONDS_PER_TITLE = 35
+
+function OriginalsPinned({ onOpen }) {
+  const section = useRef(null)
+  const track = useRef(null)
+  const [dist, setDist] = useState(0)
+
+  useLayoutEffect(() => {
+    const measure = () => setDist(Math.max(0, track.current.scrollWidth - window.innerWidth))
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(track.current)
+    window.addEventListener('resize', measure)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [])
+
+  const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end end'] })
+  const x = useTransform(scrollYProgress, [0.06, 0.94], [0, -dist])
+  const total = projects.length * SECONDS_PER_TITLE
+  const time = useTransform(scrollYProgress, (v) => fmtTime(v * total))
+  const nowPlaying = useTransform(scrollYProgress, (v) => projects[Math.min(projects.length - 1, Math.floor(v * projects.length))].title)
+
+  return (
+    <section className="section section-pin" id="originals" ref={section} style={{ height: `calc(100vh + ${dist * 1.2}px)` }}>
+      <div className="pin-stage">
+        <Heading {...originalsHead} />
+        <motion.div className="pin-track" ref={track} style={{ x }}>
+          {projects.map((p, i) => (
+            <Poster key={p.slug} p={p} i={i} onOpen={onOpen} />
+          ))}
+        </motion.div>
+        <div className="scrubber">
+          <span className="scrubber-now">
+            <b>Now playing</b> <motion.span>{nowPlaying}</motion.span>
+          </span>
+          <div className="scrubber-bar">
+            <motion.div className="scrubber-fill" style={{ scaleX: scrollYProgress }} />
+            {projects.map((p, i) => (
+              <span key={p.slug} className="scrubber-tick" style={{ left: `${(i / projects.length) * 100}%` }} />
+            ))}
+            <motion.span className="scrubber-head" style={{ left: useTransform(scrollYProgress, (v) => `${v * 100}%`) }} />
+          </div>
+          <span className="scrubber-time">
+            <motion.span>{time}</motion.span> / {fmtTime(total)}
+          </span>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function fmtTime(sec) {
+  const s = Math.round(sec)
+  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`
+}
+
+function Poster({ p, i, onOpen }) {
+  return (
+    <motion.button
+      className="poster"
+      onClick={() => onOpen(p)}
+      initial={{ opacity: 0, x: 80, rotateY: -25 }}
+      whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ delay: (i % 4) * 0.12, duration: 0.8, ease: [0.2, 0.8, 0.2, 1] }}
+    >
+      <motion.span
+        className="rank"
+        initial={{ opacity: 0, scale: 0.6, y: 40 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.25 + (i % 4) * 0.12, type: 'spring', stiffness: 140, damping: 14 }}
+      >
+        {i + 1}
+      </motion.span>
+      <Tilt className="poster-card" max={8}>
+        <ProjectArt project={p} />
+        <div className="poster-info">
+          <div className="poster-btns">
+            <span className="circle white">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 4v16l13-8z" />
+              </svg>
+            </span>
+            <span className="circle">+</span>
+            <span className="circle push">⌄</span>
+          </div>
+          <div className="poster-meta">
+            <span className="match">{p.match}% Match</span>
+            <span className="pill">{p.genre}</span>
+            <span>{p.year}</span>
+          </div>
+          <p className="poster-log">{p.logline}</p>
+          <div className="dots">{p.stack.slice(0, 4).join(' • ')}</div>
+        </div>
+      </Tilt>
+    </motion.button>
   )
 }
 
@@ -171,6 +243,25 @@ export function Journey() {
   const seasons = [...new Set(journey.map((e) => e.code.split(' ')[0]))]
   const [season, setSeason] = useState(seasons[seasons.length - 1])
   const eps = journey.filter((e) => e.code.startsWith(season))
+  const reel = useRef(null)
+  const [lit, setLit] = useState(0)
+  const { scrollYProgress } = useScroll({ target: reel, offset: ['start 65%', 'end 55%'] })
+  const headTop = useTransform(scrollYProgress, (v) => `${v * 100}%`)
+
+  // An episode lights up once the playhead has reached its node.
+  const updateLit = (v) => {
+    const box = reel.current
+    if (!box) return
+    const h = box.offsetHeight
+    const n = [...box.querySelectorAll('.episode')].filter((el) => (el.offsetTop + 40) / h <= v + 0.001).length
+    setLit((cur) => (cur === n ? cur : n))
+  }
+  useMotionValueEvent(scrollYProgress, 'change', updateLit)
+  useEffect(() => {
+    const id = setTimeout(() => updateLit(scrollYProgress.get()), 450)
+    return () => clearTimeout(id)
+  })
+
   return (
     <section className="section" id="journey">
       <Heading kicker="Docuseries" title="My Journey" aside="Season 1 is the foundation. Season 2 is where it gets real." />
@@ -181,6 +272,13 @@ export function Journey() {
           </button>
         ))}
       </motion.div>
+      <div className="reel" ref={reel}>
+        <div className="reel-line">
+          <motion.div className="reel-fill" style={{ scaleY: scrollYProgress }} />
+        </div>
+        <motion.div className="reel-head" style={{ top: headTop }}>
+          <span />
+        </motion.div>
       <AnimatePresence mode="wait">
         <motion.div
           key={season}
@@ -193,12 +291,13 @@ export function Journey() {
           {eps.map((e, i) => (
             <motion.article
               key={e.code}
-              className={`episode ${e.upcoming ? 'upcoming' : ''}`}
+              className={`episode ${e.upcoming ? 'upcoming' : ''} ${i < lit ? 'lit' : ''}`}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.7, delay: i * 0.08, ease: [0.2, 0.8, 0.2, 1] }}
             >
+              <span className="reel-node" aria-hidden="true" />
               <Tilt className="ep-thumb" max={6} style={{ background: `linear-gradient(135deg, ${e.color}, #0a0a0a 85%)` }}>
                 <span className="ep-num">{String(i + 1).padStart(2, '0')}</span>
                 <span className="ep-code">{e.code}</span>
@@ -232,6 +331,7 @@ export function Journey() {
           ))}
         </motion.div>
       </AnimatePresence>
+      </div>
     </section>
   )
 }
@@ -285,11 +385,10 @@ export function FullStory({ onOpen }) {
             </div>
             <div>
               <h4>The Plot</h4>
-              <p className="script-p">
-                I am passionate about creating efficient, scalable systems that solve complex problems. My focus is primarily on
-                backend infrastructure, building full-stack platforms, and integrating robust DevOps pipelines into
-                production-ready applications.
-              </p>
+              <ScrollWords
+                className="script-p"
+                text="I am passionate about creating efficient, scalable systems that solve complex problems. My focus is primarily on backend infrastructure, building full-stack platforms, and integrating robust DevOps pipelines into production-ready applications."
+              />
               <h4>Core Focus</h4>
               <ul className="focus">
                 {focus.map((f, i) => (
@@ -391,10 +490,7 @@ export function Contact() {
         <div className="contact-glow" aria-hidden="true" />
         <div className="contact-copy">
           <SplitText as="h3" text={'Let\u2019s build something useful.'} inView stagger={0.02} />
-          <p>
-            I&rsquo;m currently looking for new opportunities, internships, and freelance projects. Whether you have a question or just
-            want to say hi, I&rsquo;ll try my best to get back to you!
-          </p>
+          <ScrollWords text={'I\u2019m currently looking for new opportunities, internships, and freelance projects. Whether you have a question or just want to say hi, I\u2019ll try my best to get back to you!'} />
           <div className="socials">
             <motion.a whileHover={{ y: -3 }} href={profile.github} target="_blank" rel="noreferrer">
               <GithubIcon /> GitHub

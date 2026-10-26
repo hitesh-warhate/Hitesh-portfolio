@@ -1,7 +1,50 @@
 import { useEffect, useRef, useState } from 'react'
-import { animate, motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import { animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 
 const ease = [0.2, 0.8, 0.2, 1]
+
+// True while the CSS media query matches; follows changes (resize, OS settings).
+export function useMedia(query) {
+  const [match, setMatch] = useState(() => window.matchMedia(query).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(query)
+    const on = () => setMatch(mq.matches)
+    on()
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [query])
+  return match
+}
+
+// Paragraph whose words light up from dim to white as it scrolls through the viewport.
+export function ScrollWords({ text, className, as: Tag = 'p' }) {
+  const ref = useRef(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 85%', 'end 55%'] })
+  const words = text.split(' ')
+  if (reduce) return <Tag className={className}>{text}</Tag>
+  return (
+    <Tag ref={ref} className={`scroll-words ${className ?? ''}`} aria-label={text}>
+      {words.map((w, i) => (
+        <Word key={i} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
+          {w}
+        </Word>
+      ))}
+    </Tag>
+  )
+}
+
+function Word({ children, progress, range }) {
+  const opacity = useTransform(progress, range, [0.15, 1])
+  const y = useTransform(progress, range, [6, 0])
+  return (
+    <>
+      <motion.span className="sw-word" style={{ opacity, y }} aria-hidden="true">
+        {children}
+      </motion.span>{' '}
+    </>
+  )
+}
 
 // Thin red reading-progress bar pinned to the top of the page.
 export function ScrollProgress() {

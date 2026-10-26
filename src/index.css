@@ -1995,3 +1995,330 @@ kbd {
     align-items: flex-start;
   }
 }
+
+/* ---------- Scroll scenes ---------- */
+
+/* 1 · Cinematic hero: pins on desktop while the letterbox closes in */
+.hero-stage {
+  position: relative;
+}
+.hero-stage.is-pinned {
+  height: 175vh;
+}
+.hero-stage.is-pinned .hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 0;
+}
+.hero-dim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  z-index: 1;
+}
+.letterbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12vh;
+  background: #000;
+  z-index: 4;
+  pointer-events: none;
+}
+.letterbox.top {
+  top: 0;
+  transform-origin: 50% 0;
+  box-shadow: 0 1px 0 rgba(229, 9, 20, 0.5);
+}
+.letterbox.bottom {
+  bottom: 0;
+  transform-origin: 50% 100%;
+  box-shadow: 0 -1px 0 rgba(229, 9, 20, 0.5);
+}
+.hero-letter {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* 2 · Pinned Originals with a video scrubber */
+.section-pin {
+  padding-top: 0;
+}
+.pin-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  margin: 0 calc(var(--pad) * -1);
+  padding: 76px var(--pad) 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.pin-stage .sec-head {
+  margin-bottom: 4px;
+}
+.pin-track {
+  display: flex;
+  width: max-content;
+  padding: 30px 14vw 46px 0;
+  will-change: transform;
+}
+.scrubber {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 13px;
+  color: #d4d4d4;
+}
+.scrubber-now {
+  min-width: 230px;
+  white-space: nowrap;
+}
+.scrubber-now b {
+  color: var(--red);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+.scrubber-bar {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.scrubber-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--red);
+  transform-origin: 0 50%;
+}
+.scrubber-tick {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.35);
+}
+.scrubber-head {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.25), 0 0 16px rgba(229, 9, 20, 0.9);
+}
+.scrubber-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.scrubber-time span {
+  color: #fff;
+}
+
+/* 3 · Journey film reel */
+.reel {
+  position: relative;
+  padding-left: 44px;
+}
+.reel-line {
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.reel-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--red), #ff6a3d);
+  transform-origin: 50% 0;
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);
+}
+.reel-head {
+  position: absolute;
+  left: 15px;
+  width: 0;
+  height: 0;
+  z-index: 3;
+}
+.reel-head span {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--red);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgba(229, 9, 20, 0.25), 0 0 24px rgba(229, 9, 20, 0.9);
+  animation: head-pulse 1.6s ease-in-out infinite;
+}
+@keyframes head-pulse {
+  50% {
+    box-shadow: 0 0 0 12px rgba(229, 9, 20, 0.08), 0 0 30px rgba(229, 9, 20, 1);
+  }
+}
+.episode {
+  position: relative;
+}
+.reel-node {
+  position: absolute;
+  left: -36px;
+  top: 34px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  border: 2px solid #444;
+  transition: background 0.4s, border-color 0.4s, transform 0.4s, box-shadow 0.4s;
+  z-index: 2;
+}
+.episode.lit .reel-node {
+  background: var(--red);
+  border-color: #ff8a8f;
+  transform: scale(1.3);
+  box-shadow: 0 0 14px rgba(229, 9, 20, 0.9);
+}
+.episode .ep-thumb {
+  transition: filter 0.6s;
+}
+.episode:not(.lit) .ep-thumb {
+  filter: grayscale(0.85) brightness(0.55);
+}
+.episode .ep-body {
+  transition: opacity 0.6s;
+}
+.episode:not(.lit) .ep-body {
+  opacity: 0.4;
+}
+
+/* 6 · Scroll-lit words */
+.sw-word {
+  display: inline-block;
+}
+.contact-copy .scroll-words {
+  color: #e5e5e5;
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+/* 7 · Chapter HUD */
+.hud {
+  position: fixed;
+  right: 14px;
+  top: 50%;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.hud-time {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.hud-rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 6px 0;
+}
+.hud-track {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.hud-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform-origin: 50% 0;
+}
+.hud-dot {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 12px;
+}
+.hud-dot i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  border: 1px solid #555;
+  transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+}
+.hud-dot.done i {
+  background: var(--red-dark);
+  border-color: var(--red-dark);
+}
+.hud-dot.on i {
+  background: var(--red);
+  border-color: #fff;
+  transform: scale(1.6);
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.9);
+}
+.hud-dot:hover i {
+  transform: scale(1.6);
+}
+.hud-dot span {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translate(8px, -50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid var(--line);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.hud-dot span small {
+  color: var(--red);
+  font-weight: 800;
+  margin-right: 4px;
+}
+.hud:hover .hud-dot span {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+.hud-now {
+  writing-mode: vertical-rl;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+.continue {
+  z-index: 5;
+}
